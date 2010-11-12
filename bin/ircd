@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+# avendesora: malkier irc server
+# bin/ircd: instantiates a new +IRC::Server+ object
+#
+# Copyright (c) 2003-2010 Eric Will <rakaur@malkier.net>
+#
+# encoding: utf-8
+
+# Prepare the environment
+$LOAD_PATH << File.join(Dir.getwd, 'lib')
+$0 = 'ircd'
+
+# Import required application modules
+require 'ircd'
+
+# Start a new instance of the application
+begin
+    IRC::Server.new
+rescue Exception => err
+    # XXX - eventually put logging and such here.
+    raise
+end
+
+exit 0
+
