@@ -46,14 +46,11 @@ class Server
     def initialize
         puts "#{ME}: version #{VERSION} [#{RUBY_PLATFORM}]"
 
-        # Check to see if we're running on a decent version of ruby
-        if RUBY_VERSION < '1.8.6'
-            puts "#{ME}: requires at least ruby 1.8.6"
+        # Check to see if we're running on 1.9
+        if RUBY_VERSION < '1.9.1'
+            puts "#{ME}: requires at least ruby 1.9.1"
             puts "#{ME}: you have #{RUBY_VERSION}"
             abort
-        elsif RUBY_VERSION < '1.9.1'
-            puts "#{ME}: supports ruby 1.9 (much faster)"
-            puts "#{ME}: you have #{RUBY_VERSION}"
         end
 
         # Check to see if we're running as root
