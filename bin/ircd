@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # avendesora: malkier irc server
-# bin/ircd: instantiates a new +IRC::Server+ object
+# bin/ircd: runs the app
 #
 # Copyright (c) 2003-2010 Eric Will <rakaur@malkier.net>
 #
@@ -15,7 +15,7 @@ require 'ircd'
 
 # Start a new instance of the application
 begin
-    IRC::Server.new
+    IRC::Application.new
 rescue Exception => err
     # XXX - eventually put logging and such here.
     raise

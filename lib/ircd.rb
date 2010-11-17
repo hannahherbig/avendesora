@@ -10,12 +10,12 @@
 %w(logger optparse yaml).each { |m| require m }
 
 # Import required application modules
-%w(loggable).each { |m| require 'ircd/' + m }
+%w(loggable server).each { |m| require 'ircd/' + m }
 
 module IRC
 
 # The main application class
-class Server
+class Application
 
     ##
     # mixins
@@ -36,6 +36,9 @@ class Server
 
     # Configuration data
     @@config = nil
+
+    # A list of our servers
+    @@servers = []
 
     ##
     # Create a new +Server+ object, which starts and runs the entire
@@ -181,9 +184,21 @@ class Server
 
         # XXX - timers
 
-        # XXX - Start the listeners
-        log(:info, 'started up')
-        log(:debug, 'debugging!')
+        # Start the listeners (one IRC::Server per port)
+        @@config[:listen].each do |listen|
+            bind_to, port = listen.split(':')
+
+            @@servers << IRC::Server.new do |s|
+                s.bind_to = bind_to
+                s.port    = port
+                s.logger  = @logger
+            end
+        end
+
+        Thread.abort_on_exception = true if debug
+
+        @@servers.each { |s| s.thread = Thread.new { s.io_loop } }
+        @@servers.each { |s| s.thread.join }
 
         # Exiting...
         app_exit

@@ -14,6 +14,18 @@
 #   3) It's very Ruby-ish instead of C-ish, and that's what I'm going for.
 #
 
+# What's the server's name?
+name: irc.malkier.net
+
+##
+# Listening settings
+# ---
+# Which ports do you want to listen for connections on?
+# Entries are in the form of "bind_address:port"
+listen:
+- *:6667
+#- 10.0.1.10:7000
+
 ##
 # How much logging should we do?
 # In order of least verbose to most verbose:
