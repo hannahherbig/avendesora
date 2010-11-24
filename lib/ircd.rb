@@ -113,7 +113,7 @@ class Application
             puts '----------------------------'
             abort
         else
-            keys_to_sym!(@@config)
+            @@config = indifferent_hash(@@config)
         end
 
         if debug
@@ -211,24 +211,23 @@ class Application
     private
     #######
 
-    ##
-    # Changes a Hash's keys from Strings to Symbols, recursively.
-    #     -- sycobuny
+    # Converts a Hash into a Hash that allows lookup by String or Symbol
+    def indifferent_hash(hash)
+        # Hash.new blocks catch lookup failures
+        hash = Hash.new do |hash, key|
+                   hash[key.to_s] if key.is_a?(Symbol)
+               end.merge(hash)
 
-    def keys_to_sym!(hash)
-        to_del, to_add, vals = [], [], []
+        # Look for any hashes inside the hash to convert
+        hash.each do |key, value|
+            # Convert this subhash
+            hash[key] = indifferent_hash(value) if value.is_a?(Hash)
 
-        hash.each do |k, v|
-            to_del << k
-            to_add << k.to_sym
-            vals   << v
+            # Arrays could have hashes in them
+            value.each_with_index do |arval, index|
+                hash[key][index] = indifferent_hash(arval) if arval.is_a?(Hash)
+            end if value.is_a?(Array)
         end
-
-        to_del.each { |d| hash.delete(d) }
-        to_add.each_with_index { |a, i| hash[a] = vals[i] }
-        vals.each { |v| keys_to_sym!(v) if v.is_a?(Hash) }
-
-        hash
     end
 
     def app_exit
