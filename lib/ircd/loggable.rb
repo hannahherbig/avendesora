@@ -2,7 +2,7 @@
 # avendesora: malkier irc server
 # lib/ircd/loggable.rb: a mixin for easy logging
 #
-# Copyright (c) 2003-2010 Eric Will <rakaur@malkier.net>
+# Copyright (c) 2003-2011 Eric Will <rakaur@malkier.net>
 #
 # encoding: utf-8
 

@@ -2,7 +2,7 @@
 # avendesora: malkier irc server
 # lib/ircd/server.rb: acts as a TCP server
 #
-# Copyright (c) 2003-2010 Eric Will <rakaur@malkier.net>
+# Copyright (c) 2003-2011 Eric Will <rakaur@malkier.net>
 #
 # encoding: utf-8
 
@@ -10,7 +10,7 @@
 require 'socket'
 
 # Import required application modules
-%w(event loggable).each { |m| require 'ircd/' + m }
+%w(client event loggable).each { |m| require 'ircd/' + m }
 
 module IRC
 
@@ -22,8 +22,7 @@ class Server
 
     ##
     # instance attributes
-    attr_accessor :thread
-    attr_writer   :bind_to, :port
+    attr_accessor :bind_to, :port, :thread
     attr_reader   :socket
 
     ##
@@ -89,12 +88,23 @@ class Server
     end
 
     def new_connection
-        newsock = @socket.accept_nonblock
+        begin
+            newsock = @socket.accept_nonblock
+        rescue IO::WaitReadable
+            return
+        end
 
         # This is to get around some silly IPv6 stuff
         host = newsock.peeraddr[3].sub('::ffff:', '')
 
         log(:info, "#@bind_to:#@port: new connection from #{host}")
+
+        @clients << LocalClient.new do |c|
+            c.hostname = host
+            c.logger   = @logger
+            c.server   = self
+            c.socket   = newsock
+        end
     end
 
     ######
