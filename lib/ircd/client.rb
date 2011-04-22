@@ -72,4 +72,3 @@ class LocalClient < Client
 end
 
 end # module IRC
-

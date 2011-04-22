@@ -110,4 +110,3 @@ class Timer
         @@timers.delete(self)
     end
 end
-

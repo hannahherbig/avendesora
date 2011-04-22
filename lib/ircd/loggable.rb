@@ -92,4 +92,3 @@ module Loggable
         end
     end
 end # module Loggable
-

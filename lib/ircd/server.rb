@@ -154,4 +154,3 @@ class Server
 end
 
 end # module IRC
-

@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+#
+# avendesora: malkier irc server
+# bin/mkpasswd: generate encrypted passwords
+#
+# Copyright (c) 2003-2011 Eric Will <rakaur@malkier.net>
+#
+# encoding: utf-8
+
+SALT_CHARS = '0123456789' +
+             'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+             'abcdefghijklmnopqrstuvwxyz' +
+             './'
+
+salt  = SALT_CHARS[rand(SALT_CHARS.length)]
+salt += SALT_CHARS[rand(SALT_CHARS.length)]
+
+print "Enter plaintext password: "
+system('stty -echo')
+plaintext = gets.chomp!
+system('stty echo')
+puts
+
+puts plaintext.crypt(salt)

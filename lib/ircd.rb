@@ -7,10 +7,14 @@
 # encoding: utf-8
 
 # Import required Ruby modules
-%w(logger optparse yaml).each { |m| require m }
+require 'logger'
+require 'optparse'
+require 'yaml'
 
 # Import required application modules
-%w(loggable server).each { |m| require 'ircd/' + m }
+require 'ircd/config'
+require 'ircd/loggable'
+require 'ircd/server'
 
 module IRC
 
@@ -49,9 +53,13 @@ class Application
     def initialize
         puts "#{ME}: version #{VERSION} [#{RUBY_PLATFORM}]"
 
-        # Check to see if we're running on 1.9
-        if RUBY_VERSION < '1.9.1'
-            puts "#{ME}: requires at least ruby 1.9.1"
+        # Check to see if we're running on good rubies
+        if RUBY_VERSION >= '1.8' && RUBY_VERSION < '1.8.7'
+            puts "#{ME}: requires at lesat ruby 1.8.7"
+            puts "#{ME}: you have #{RUBY_VERSION}"
+            abort
+        elsif RUBY_VERSION >= '1.9' && RUBY_VERSION < '1.9.2'
+            puts "#{ME}: requires at least ruby 1.9.2"
             puts "#{ME}: you have #{RUBY_VERSION}"
             abort
         end
@@ -104,18 +112,6 @@ class Application
         trap(:TTOU)  { :SIG_IGN }
         trap(:TSTP)  { :SIG_IGN }
 
-        # Load configuration file
-        begin
-            @@config = YAML.load_file('etc/config.yml')
-        rescue Exception => e
-            puts '----------------------------'
-            puts "#{ME}: configure error: #{e}"
-            puts '----------------------------'
-            abort
-        else
-            @@config = indifferent_hash(@@config)
-        end
-
         if debug
             puts "#{ME}: warning: debug mode enabled"
             puts "#{ME}: warning: all streams will be logged in the clear!"
@@ -159,7 +155,7 @@ class Application
 
             # Set up logging
             if logging or debug
-                Dir.mkdir('var') unless Dir.exists?('var')
+                Dir.mkdir('var') unless Filegit dif.exists?('var')
                 self.logger = Logger.new('var/ircd.log', 'weekly')
             end
         else
@@ -173,24 +169,22 @@ class Application
         if debug
             log_level = :debug
         else
-            log_level = @@config[:logging].to_sym
+            log_level = @@config.log_level.to_sym
         end
 
         self.log_level = log_level if logging
 
         # Write the PID file
-        Dir.mkdir('var') unless Dir.exists?('var')
+        Dir.mkdir('var') unless File.exists?('var')
         File.open('var/ircd.pid', 'w') { |f| f.puts(Process.pid) }
 
         # XXX - timers
 
         # Start the listeners (one IRC::Server per port)
-        @@config[:listen].each do |listen|
-            bind_to, port = listen.split(':')
-
+        @@config.listeners.each do |listener|
             @@servers << IRC::Server.new do |s|
-                s.bind_to = bind_to
-                s.port    = port
+                s.bind_to = listener.bind_to
+                s.port    = listener.port.to_i
                 s.logger  = @logger
             end
         end

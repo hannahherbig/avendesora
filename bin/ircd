@@ -6,20 +6,63 @@
 #
 # encoding: utf-8
 
+#
+# DO NOT EDIT YET!
+#
+
 # Prepare the environment
 $LOAD_PATH << File.join(Dir.getwd, 'lib')
 $0 = 'ircd'
 
-# Import required application modules
 require 'ircd'
 
-# Start a new instance of the application
-begin
-    IRC::Application.new
-rescue Exception => err
-    # XXX - eventually put logging and such here.
-    raise
+#
+# This is the configuration. Edit from here down.
+#
+# HOW TO USE THIS FILE:
+#
+# This file is, strictly speaking, a Ruby script. We've provided
+# methods that allow the configuration to be simple and human-readable.
+# Anything that works in Ruby will technically work here, but we
+# suggest sticking with the basics unless you know what you're doing.
+#
+# Unquoted strings are interpreted as Ruby statements. Numbers do not
+# need to be encapsulted within quotes. If your string is basic alphanumeric
+# you can use a :symbol (prefixing your string with a colon instead of
+# encapsulting it with quotations) as it is less noisy.
+#
+configure do
+
+  # The name of our server
+  name 'irc.malkier.net'
+
+  # How much logging should we do?
+  # In order of least verbose to most verbose:
+  # none, fatal, error, warning, info, debug
+  #
+  logging :info
+
+  # Define ports the IRCd should listen on for incoming
+  # user connections. You may optionally provide an IP/host
+  # to bind to. The default is to bind to all hosts.
+  #
+  listen 6667
+  listen 6668, '127.0.0.1'
+
+  # This is here to make sure you're paying attention.
+  #abort "You didn't read your configuration!"
+
+  # There's a special type of user called an operator. These users
+  # are allowed certain privileges on the network and are required
+  # to manage network connections and malicious users.
+  #
+  operator :rakaur, :flags => :admin do
+
+    # The user's password. These passwords are stored encrypted, and may be
+    # generated using the `mkpasswd` utility included. Alternatively, any
+    # utility that encrypts using DES can be used.
+    #
+
+    password 'WXFUd2cPT3u9g'
+  end
 end
-
-exit 0
-
