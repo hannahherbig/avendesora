@@ -2,7 +2,8 @@
 # avendesora: malkier irc server
 # lib/ircd/event.rb: classes for an event loop
 #
-# Copyright (c) 2003-2011 Eric Will <rakaur@malkier.net>
+# Copyright (c) 2010-2011 Eric Will <rakaur@malkier.net>
+# Copyright (c) 2011 Michael Rodriguez <dkingston@malkier.net>
 #
 # encoding: utf-8
 
