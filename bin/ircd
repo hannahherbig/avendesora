@@ -65,5 +65,8 @@ configure do
     #
 
     password 'WXFUd2cPT3u9g'
+
+    # The user's hostmask.
+    hostmask '*@*'
   end
 end
