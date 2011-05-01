@@ -8,7 +8,7 @@
 # encoding: utf-8
 
 # Import required application modules
-%w(event loggable).each { |m| require 'ircd/' + m }
+%w(event loggable).each { |m| require m }
 
 module IRC
 
