@@ -71,6 +71,10 @@ class Application
             def password(password)
                 self.password = password
             end
+
+            def hostmask(hostmask)
+                self.hostmask = hostmask
+            end
         end
     end
 end

@@ -156,7 +156,7 @@ class Application
 
             # Set up logging
             if logging or debug
-                Dir.mkdir('var') unless Filegit dif.exists?('var')
+                Dir.mkdir('var') unless File.exists?('var')
                 self.logger = Logger.new('var/ircd.log', 'weekly')
             end
         else
